@@ -33,12 +33,13 @@ That framing was intended to serve multiple audiences:
 
 This repository holds the competition front end and supporting working files used to turn the comparison into a visual story.
 
-- [README.md](/c:/Users/sohan/Datathon/README.md): Project overview, workflow, methodology, and viewing instructions
-- [front-end/index.html](/c:/Users/sohan/Datathon/front-end/index.html): Main interactive visualization
-- [front-end/assets](/c:/Users/sohan/Datathon/front-end/assets): Backdrop images and map assets used by the front end
-- [data/rail-cost-data.ts](/c:/Users/sohan/Datathon/data/rail-cost-data.ts): Working rail cost and corridor data from earlier project exploration
-- [data/towns.ts](/c:/Users/sohan/Datathon/data/towns.ts): Supporting label and location data used during mapping experiments
-- [data/README.md](/c:/Users/sohan/Datathon/data/README.md): Upstream dataset metadata and citation details
+- [README.md](Datathon/README.md): Project overview, workflow, methodology, and viewing instructions
+- [front-end/index.html](Datathon/front-end/index.html): Main interactive visualization
+- [front-end/assets](Datathon/front-end/assets): Backdrop images and map assets used by the front end
+- [data/rail-cost-data.ts](Datathon/data/rail-cost-data.ts): Working rail cost and corridor data from earlier project exploration
+- [data/rail-cost-data.ts](Datathon/data/Refined Data of North America Cities Rail costs.xlsx): Cleaned up data that was used to find cost per mile
+- [data/towns.ts](Datathon/data/towns.ts): Supporting label and location data used during mapping experiments
+- [data/README.md](Datathon/data/README.md): Upstream dataset metadata and citation details
 
 ## How We Did It
 
@@ -96,7 +97,7 @@ Construction Costs of Urban Rail Projects Worldwide
 
 - Authors: Alon Levy, Eric Goldwyn, Elif Ensari, Marco Chitti
 - Institution: Marron Institute of Urban Management, New York University
-- Repository metadata: [data/README.md](/c:/Users/sohan/Datathon/data/README.md)
+- Repository metadata: [data/README.md](Datathon/data/README.md)
 
 ### Working method
 
@@ -138,7 +139,7 @@ If you prefer running it from a local server instead of opening the file directl
 Example using Python:
 
 ```bash
-cd c:\Users\sohan\Datathon
+cd Datathon
 python -m http.server 8000
 ```
 
@@ -183,8 +184,3 @@ In line with competition guidance, this project used generative AI as a support 
 
 All framing, data selection, interpretation, and conclusions remained the responsibility of the project team. AI tools supported the workflow, but they did not replace human judgment.
 
-## Submission Context
-
-Prepared for the NYU Building Urban Data Community Visualization Competition.
-
-Submitted April 3, 2026.
