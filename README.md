@@ -8,7 +8,9 @@ This project compares the cost of building urban rail in Los Angeles against pee
 
 How far would the same overall LA project budget go if the line were built at the cost-per-mile rates seen in other cities?
 
-The final visualization answers that question with an interactive metro-style map. A purple extension slider overlays the D Line route and moves to the last station that could be reached under each comparison city's construction cost profile. This turns a dense cost dataset into a spatial, easy-to-read comparison of transit delivery efficiency.
+After the team completed its broader data analysis, it refined the dataset into a focused North American comparison set of rail construction costs. The final visualization uses that refined data to compare Los Angeles against peer cities and show how far the same D Line budget would go under each city's cost-per-mile conditions.
+
+The final visualization answers that question with an interactive metro-style map. A purple extension slider overlays the D Line route and moves to the last station that could be reached under each comparison city's construction cost profile. This turns the refined cost dataset into a spatial, easy-to-read comparison of transit delivery efficiency.
 
 The work was created for the NYU Building Urban Data Community Visualization Competition and uses the Construction Costs of Urban Rail Projects Worldwide dataset as its primary source.
 
@@ -48,11 +50,13 @@ The team started with a whiteboard session to review the competition datasets an
 
 The primary dataset was reviewed and filtered in Microsoft Excel. The team narrowed the working set to projects that were recent, relevant, and comparable to Los Angeles in terms of scale, geography, and transit context. Entries with incomplete or outdated cost information were removed or deprioritized, and units were standardized so projects could be compared consistently.
 
+That broader review then produced a refined North American subset, which became the basis for the final comparison shown in the visualization. In other words, the front-end comparison is not using the entire global dataset directly; it is using the refined city set that emerged from the analysis.
+
 ### 3. Cost-per-mile modeling
 
 The analytical model normalized project cost by route length to create a cost-per-mile benchmark. That benchmark made it possible to compare the LA D Line Extension against peer cities on common ground, even when total project lengths and budgets differed substantially.
 
-The model was then used to estimate how far LA's D Line budget would extend under other cities' cost structures. Instead of stopping at a spreadsheet comparison, the team translated those outputs into stations along the D Line extension corridor so viewers could see the difference spatially.
+The model was then used to estimate how far LA's D Line budget would extend under the cost structures in that refined North American comparison set. Instead of stopping at a spreadsheet comparison, the team translated those outputs into stations along the D Line extension corridor so viewers could see the difference spatially.
 
 ### 4. Regression and exploratory analysis
 
@@ -68,7 +72,7 @@ The final interactive front page in this repository was built as a lightweight s
 
 ## Visualization Logic
 
-The current interface focuses on a small set of North American comparison cities:
+The current interface focuses on a small set of North American comparison cities drawn from the refined comparison data:
 
 - New York
 - San Francisco
@@ -100,7 +104,8 @@ Construction Costs of Urban Rail Projects Worldwide
 - Filter to relevant and reasonably comparable North American projects
 - Standardize values for comparison
 - Calculate or verify cost-per-mile figures
-- Compare peer-city cost structures against the LA D Line budget
+- Refine the analysis into a focused North American city comparison set
+- Compare that refined peer-city cost data against the LA D Line budget
 - Translate results into station-based reach along the extension corridor
 - Build a visual interface that makes those differences legible to non-technical viewers
 
@@ -122,7 +127,7 @@ This project currently uses a static front end, so there is no `npm install`, no
 
 ### Option 1: Open the file directly
 
-1. Navigate to [front-end/index.html](/c:/Users/sohan/Datathon/front-end/index.html).
+1. Navigate to [front-end/index.html](../Datathon/front-end/index.html).
 2. Open it in a modern browser such as Chrome, Edge, or Firefox.
 3. Click the comparison city buttons to move the D Line extension slider.
 
@@ -151,7 +156,7 @@ http://localhost:8000/front-end/
 
 ## Geographic Scope
 
-The final comparison centers on Los Angeles and a selected group of North American peer cities in the United States and Canada with relevant rail construction programs. This narrower scope was chosen to keep the comparison grounded in cities with more similar governance, labor, regulatory, and project-delivery conditions than a fully global comparison would allow.
+The final comparison centers on Los Angeles and a selected group of North American peer cities in the United States and Canada with relevant rail construction programs. This narrower scope came out of the team's refined analysis process and keeps the comparison grounded in cities with more similar governance, labor, regulatory, and project-delivery conditions than a fully global comparison would allow.
 
 ## References and Data Sources
 
