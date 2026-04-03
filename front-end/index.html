@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LA Metro D Line Extension</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #1f2937;
+        --muted: #6b7280;
+        --panel: #fffdf8;
+        --panel-edge: #e8dccb;
+        --track: #a05eb5;
+        --track-soft: rgba(160, 94, 181, 0.25);
+        --thumb-shadow: rgba(105, 58, 124, 0.28);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at top, rgba(255, 255, 255, 0.92), rgba(250, 245, 236, 0.98)),
+          #f6efe4;
+        color: var(--ink);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .page {
+        width: min(1380px, calc(100% - 24px));
+        margin: 0 auto;
+        padding: 24px 0 32px;
+      }
+
+      .hero {
+        margin-bottom: 20px;
+      }
+
+      .hero-copy {
+        max-width: 980px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2rem, 3.6vw, 3.35rem);
+        line-height: 1.02;
+        letter-spacing: -0.05em;
+      }
+
+      .hero-copy p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.6;
+        max-width: 76ch;
+      }
+
+      .comparison-layout {
+        display: grid;
+        grid-template-columns: minmax(180px, 220px) minmax(0, 1fr) minmax(200px, 240px);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .rail-panel,
+      .map-shell {
+        padding: 14px;
+        border: 1px solid var(--panel-edge);
+        border-radius: 28px;
+        background: rgba(255, 253, 248, 0.88);
+        box-shadow: 0 24px 60px rgba(94, 79, 63, 0.08);
+      }
+
+      .rail-heading {
+        margin: 0 0 12px;
+        color: var(--ink);
+        font-size: 0.92rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .cpm-list,
+      .comparison-buttons {
+        display: grid;
+        gap: 10px;
+      }
+
+      .comparison-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .cpm-card,
+      .comparison-button {
+        padding: 12px 14px;
+        border: 1px solid #d8cab7;
+        border-radius: 18px;
+        background: #fffdf8;
+        color: var(--ink);
+        text-align: left;
+        transition:
+          border-color 0.18s ease,
+          background 0.18s ease,
+          transform 0.18s ease,
+          box-shadow 0.18s ease;
+      }
+
+      .cpm-card {
+        min-height: 74px;
+      }
+
+      .cpm-card.is-active,
+      .comparison-button.is-active {
+        border-color: #a05eb5;
+        background: rgba(160, 94, 181, 0.12);
+        box-shadow: 0 10px 24px rgba(160, 94, 181, 0.16);
+      }
+
+      .comparison-button {
+        cursor: pointer;
+      }
+
+      .comparison-button:hover {
+        border-color: #b58bc6;
+        box-shadow: 0 10px 20px rgba(160, 94, 181, 0.12);
+        transform: translateY(-1px);
+      }
+
+      .cpm-card strong,
+      .comparison-button strong {
+        display: block;
+        font-size: 1rem;
+        line-height: 1.15;
+      }
+
+      .cpm-card strong {
+        margin-bottom: 6px;
+      }
+
+      .cpm-card span,
+      .comparison-button span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.82rem;
+        line-height: 1.35;
+      }
+
+      .cpm-card .metric-value {
+        color: #6f3f81;
+        font-size: 1.1rem;
+        font-weight: 800;
+        line-height: 1.1;
+      }
+
+      .map-stage {
+        position: relative;
+        border-radius: 22px;
+        overflow: hidden;
+        background: var(--panel);
+      }
+
+      .map-backdrop {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .extension-overlay {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .extension-track-casing {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.9);
+        stroke-width: 14;
+        stroke-linecap: round;
+      }
+
+      .extension-track-base {
+        fill: none;
+        stroke: var(--track-soft);
+        stroke-width: 8;
+        stroke-linecap: round;
+      }
+
+      .extension-track-fill {
+        fill: none;
+        stroke: var(--track);
+        stroke-width: 8;
+        stroke-linecap: round;
+      }
+
+      .extension-stop {
+        fill: #ffffff;
+        stroke: var(--track);
+        stroke-width: 2.6;
+      }
+
+      .extension-stop-label {
+        fill: #473356;
+        font-size: 7.8px;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+        stroke: rgba(255, 255, 255, 0.96);
+        stroke-width: 2.4;
+        paint-order: stroke;
+      }
+
+      .extension-slider-wrap {
+        position: absolute;
+        left: 12.6%;
+        top: 27.65%;
+        width: 60%;
+        transform: translateY(-50%) rotate(-29.5deg);
+        transform-origin: 100% 50%;
+        z-index: 2;
+      }
+
+      .extension-slider {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        appearance: none;
+        background: transparent;
+        cursor: pointer;
+        direction: rtl;
+      }
+
+      .extension-slider:focus {
+        outline: none;
+      }
+
+      .extension-slider::-webkit-slider-runnable-track {
+        height: 8px;
+        border-radius: 999px;
+        background: transparent;
+      }
+
+      .extension-slider::-moz-range-track {
+        height: 8px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+      }
+
+      .extension-slider::-moz-range-progress {
+        height: 8px;
+        border-radius: 999px;
+        background: transparent;
+      }
+
+      .extension-slider::-webkit-slider-thumb {
+        appearance: none;
+        width: 22px;
+        height: 22px;
+        margin-top: -7px;
+        border: 3px solid #ffffff;
+        border-radius: 50%;
+        background: var(--track);
+        box-shadow: 0 6px 18px var(--thumb-shadow);
+      }
+
+      .extension-slider::-moz-range-thumb {
+        width: 22px;
+        height: 22px;
+        border: 3px solid #ffffff;
+        border-radius: 50%;
+        background: var(--track);
+        box-shadow: 0 6px 18px var(--thumb-shadow);
+      }
+
+      .extension-slider:focus-visible::-webkit-slider-thumb {
+        box-shadow:
+          0 0 0 4px rgba(160, 94, 181, 0.2),
+          0 6px 18px var(--thumb-shadow);
+      }
+
+      .extension-slider:focus-visible::-moz-range-thumb {
+        box-shadow:
+          0 0 0 4px rgba(160, 94, 181, 0.2),
+          0 6px 18px var(--thumb-shadow);
+      }
+
+      @media (max-width: 1180px) {
+        .comparison-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .comparison-buttons,
+        .cpm-list {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        .page {
+          width: min(100% - 12px, 1180px);
+          padding: 12px 0 20px;
+        }
+
+        h1 {
+          font-size: clamp(1.8rem, 8vw, 2.6rem);
+        }
+
+        .hero-copy p {
+          font-size: 0.94rem;
+        }
+
+        .rail-panel,
+        .map-shell {
+          padding: 8px;
+          border-radius: 20px;
+        }
+
+        .map-stage {
+          border-radius: 14px;
+        }
+
+        .extension-slider-wrap {
+          width: 60%;
+        }
+
+        .cpm-list,
+        .comparison-buttons {
+          grid-template-columns: 1fr;
+        }
+
+        .extension-slider::-webkit-slider-thumb,
+        .extension-slider::-moz-range-thumb {
+          width: 18px;
+          height: 18px;
+        }
+
+        .extension-slider::-webkit-slider-thumb {
+          margin-top: -6px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <div class="hero-copy">
+          <h1>How far would other cities' rail costs carry LA's D Line?</h1>
+          <p>
+            This comparison uses Los Angeles Metro's D Line extension as the baseline and asks how
+            far the same overall project budget would go if it were built at the cost per mile seen
+            in other North American cities. The left rail shows each city's cost-per-mile multiple
+            versus LA, and the city list on the right moves the purple extension to the last station
+            that budget would reach.
+          </p>
+        </div>
+      </header>
+
+      <section class="comparison-layout" aria-label="D Line cost comparison">
+        <aside class="rail-panel cpm-panel" aria-labelledby="cpm-heading">
+          <p id="cpm-heading" class="rail-heading">Cost Per Mile vs LA</p>
+          <div id="cpm-list" class="cpm-list"></div>
+        </aside>
+
+        <section class="map-shell">
+          <div class="map-stage">
+            <img
+              class="map-backdrop"
+              src="./assets/la-metro-backdrop-screenshot.png"
+              alt="Los Angeles Metro system map with D Line extension guide"
+            />
+            <svg class="extension-overlay" viewBox="0 0 616 434" aria-hidden="true">
+              <line class="extension-track-casing" x1="125.27" y1="301.78" x2="447" y2="120" />
+              <line class="extension-track-base" x1="125.27" y1="301.78" x2="447" y2="120" />
+              <line
+                id="extension-track-fill"
+                class="extension-track-fill"
+                x1="447"
+                y1="120"
+                x2="447"
+                y2="120"
+              />
+
+              <circle class="extension-stop" cx="417.75" cy="136.53" r="4.5" />
+              <circle class="extension-stop" cx="388.5" cy="153.05" r="4.5" />
+              <circle class="extension-stop" cx="359.26" cy="169.58" r="4.5" />
+              <circle class="extension-stop" cx="330.01" cy="186.1" r="4.5" />
+              <circle class="extension-stop" cx="300.76" cy="202.63" r="4.5" />
+              <circle class="extension-stop" cx="271.51" cy="219.15" r="4.5" />
+              <circle class="extension-stop" cx="242.26" cy="235.68" r="4.5" />
+              <circle class="extension-stop" cx="213.01" cy="252.2" r="4.5" />
+              <circle class="extension-stop" cx="183.77" cy="268.73" r="4.5" />
+              <circle class="extension-stop" cx="154.52" cy="285.25" r="4.5" />
+              <circle class="extension-stop" cx="125.27" cy="301.78" r="4.5" />
+
+              <text
+                class="extension-stop-label"
+                x="408.9"
+                y="120.86"
+                text-anchor="middle"
+                transform="rotate(-51 408.9 120.86)"
+              >
+                Wilshire/La Brea
+              </text>
+              <text
+                class="extension-stop-label"
+                x="379.65"
+                y="137.38"
+                text-anchor="middle"
+                transform="rotate(-51 379.65 137.38)"
+              >
+                Wilshire/Fairfax
+              </text>
+              <text
+                class="extension-stop-label"
+                x="350.41"
+                y="153.91"
+                text-anchor="middle"
+                transform="rotate(-51 350.41 153.91)"
+              >
+                Wilshire/La Cienega
+              </text>
+              <text
+                class="extension-stop-label"
+                x="321.16"
+                y="170.43"
+                text-anchor="middle"
+                transform="rotate(-51 321.16 170.43)"
+              >
+                Beverly Dr
+              </text>
+              <text
+                class="extension-stop-label"
+                x="291.91"
+                y="186.96"
+                text-anchor="middle"
+                transform="rotate(-51 291.91 186.96)"
+              >
+                Century City
+              </text>
+              <text
+                class="extension-stop-label"
+                x="262.66"
+                y="203.48"
+                text-anchor="middle"
+                transform="rotate(-51 262.66 203.48)"
+              >
+                Westwood/UCLA
+              </text>
+              <text
+                class="extension-stop-label"
+                x="233.41"
+                y="220.01"
+                text-anchor="middle"
+                transform="rotate(-51 233.41 220.01)"
+              >
+                Westwood/VA Hospital
+              </text>
+              <text
+                class="extension-stop-label"
+                x="204.16"
+                y="236.53"
+                text-anchor="middle"
+                transform="rotate(-51 204.16 236.53)"
+              >
+                Bundy/Wilshire
+              </text>
+              <text
+                class="extension-stop-label"
+                x="174.92"
+                y="253.06"
+                text-anchor="middle"
+                transform="rotate(-51 174.92 253.06)"
+              >
+                Mid City
+              </text>
+              <text
+                class="extension-stop-label"
+                x="145.67"
+                y="269.58"
+                text-anchor="middle"
+                transform="rotate(-51 145.67 269.58)"
+              >
+                14th St/Wilshire
+              </text>
+            </svg>
+            <div class="extension-slider-wrap">
+              <input
+                id="extension-slider"
+                class="extension-slider"
+                type="range"
+                min="0"
+                max="11"
+                step="1"
+                value="0"
+                aria-label="D Line extension slider"
+              />
+            </div>
+          </div>
+        </section>
+
+        <aside class="rail-panel comparison-panel" aria-labelledby="comparison-heading">
+          <p id="comparison-heading" class="rail-heading">Comparison Cities</p>
+          <div id="comparison-buttons" class="comparison-buttons"></div>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      const slider = document.getElementById("extension-slider");
+      const extensionTrackFill = document.getElementById("extension-track-fill");
+      const cpmList = document.getElementById("cpm-list");
+      const comparisonButtons = document.getElementById("comparison-buttons");
+      const extensionStopPoints = [
+        { x: 447, y: 120 },
+        { x: 417.75, y: 136.53 },
+        { x: 388.5, y: 153.05 },
+        { x: 359.26, y: 169.58 },
+        { x: 330.01, y: 186.1 },
+        { x: 300.76, y: 202.63 },
+        { x: 271.51, y: 219.15 },
+        { x: 242.26, y: 235.68 },
+        { x: 213.01, y: 252.2 },
+        { x: 183.77, y: 268.73 },
+        { x: 154.52, y: 285.25 },
+        { x: 125.27, y: 301.78 },
+      ];
+      const cityComparisons = [
+        { city: "New York", multiplier: "3.47x", stationIndex: 1, stationLabel: "Wilshire/La Brea" },
+        {
+          city: "San Francisco",
+          multiplier: "1.52x",
+          stationIndex: 4,
+          stationLabel: "Beverly Dr",
+        },
+        { city: "Toronto", multiplier: "1.23x", stationIndex: 5, stationLabel: "Century City" },
+        { city: "Vancouver", multiplier: "0.74x", stationIndex: 9, stationLabel: "Mid City" },
+        {
+          city: "Montreal",
+          multiplier: "0.72x",
+          stationIndex: 10,
+          stationLabel: "14th St/Wilshire",
+        },
+        {
+          city: "Seattle",
+          multiplier: "0.67x",
+          stationIndex: 11,
+          stationLabel: "Downtown Santa Monica",
+        },
+      ];
+
+      function setActiveComparison(stopIndex) {
+        cpmList.querySelectorAll(".cpm-card").forEach((card) => {
+          const isActive = Number(card.dataset.stationIndex) === stopIndex;
+          card.classList.toggle("is-active", isActive);
+        });
+
+        comparisonButtons.querySelectorAll(".comparison-button").forEach((button) => {
+          const isActive = Number(button.dataset.stationIndex) === stopIndex;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        });
+      }
+
+      cityComparisons.forEach((comparison) => {
+        const cpmCard = document.createElement("div");
+        cpmCard.className = "cpm-card";
+        cpmCard.dataset.stationIndex = String(comparison.stationIndex);
+        cpmCard.innerHTML = `
+          <strong>${comparison.city}</strong>
+          <span class="metric-value">${comparison.multiplier} LA CPM</span>
+          <span>Relative cost per mile</span>
+        `;
+        cpmList.appendChild(cpmCard);
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "comparison-button";
+        button.dataset.stationIndex = String(comparison.stationIndex);
+        button.setAttribute("aria-pressed", "false");
+        button.innerHTML = `
+          <strong>${comparison.city}</strong>
+          <span>Stops at ${comparison.stationLabel}</span>
+        `;
+        button.addEventListener("click", () => {
+          slider.value = String(comparison.stationIndex);
+          syncSliderProgress();
+          setActiveComparison(comparison.stationIndex);
+        });
+        comparisonButtons.appendChild(button);
+      });
+
+      function syncSliderProgress() {
+        const stopIndex = Number(slider.value);
+        const point = extensionStopPoints[stopIndex];
+        extensionTrackFill.setAttribute("x1", String(point.x));
+        extensionTrackFill.setAttribute("y1", String(point.y));
+        setActiveComparison(stopIndex);
+      }
+
+      slider.addEventListener("input", syncSliderProgress);
+      syncSliderProgress();
+    </script>
+  </body>
+</html>
